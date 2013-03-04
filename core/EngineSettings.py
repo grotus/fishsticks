@@ -1,0 +1,5 @@
+# Window size
+SCREEN_WIDTH = 80
+SCREEN_HEIGHT = 50
+
+LIMIT_FPS = 60
