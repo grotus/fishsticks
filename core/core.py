@@ -1,5 +1,8 @@
-import libtcodpy as libtcod
-from EngineSettings import *
+# import libtcodpy as libtcod
+# import EngineSettings
+from Scene import Scene
+from gui.MainWindow import MainWindow
 
-con = libtcod.console_new(MAIN_WIDTH, MAIN_HEIGHT)
-panel = libtcod.console_new(SCREEN_WIDTH, 7)
+
+mainWindow = MainWindow()
+mainScene = Scene(window=mainWindow)

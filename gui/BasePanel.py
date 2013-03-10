@@ -1,17 +1,19 @@
 import libtcodpy as libtcod
+from gui.Helpers import Rect
+
 
 class BasePanel(object):
     """Base class for gui panels"""
-    def __init__(self, parent=None, x=0, y=0, w=80, h=50):
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-        self.console = libtcod.console_new(w, h)
+    def __init__(self, parent=None, rect=Rect(0, 0, 80, 50)):
+        self.x = rect.x
+        self.y = rect.y
+        self.w = rect.w
+        self.h = rect.h
+        self.console = libtcod.console_new(rect.w, rect.h)
 
         self.parent = None
         self.children = []
-        if parent != None:
+        if parent is not None:
             parent.children.append(self)
             self.parent = parent
 
