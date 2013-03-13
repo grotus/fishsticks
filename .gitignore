@@ -1,3 +1,5 @@
 /.idea
 /.ropeproject
 *.pyc
+libtcod*.so
+placeholder.helloworld
