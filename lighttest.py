@@ -24,14 +24,15 @@ gamelog = LogPanel(Core.mainWindow, Rect(0, EngineSettings.SCREEN_HEIGHT-7, Engi
                    color_data=ColorData(background_color=libtcod.darkest_sepia))
 
 gamelog.Log("Lighting will be tested")
+Core.log = gamelog
 
 # Create some light
 ambientLight = AmbientLight(col=libtcod.white, brightness=0.1)
 l1 = Light(col=libtcod.red, x=20, y=20, brightness=0.9)
 l2 = Light(col=libtcod.white, x=25, y=27, brightness=0.9)
 Core.mainScene.AddLight(ambientLight)
-Core.mainScene.AddLight(l1)
-Core.mainScene.AddLight(l2)
+#Core.mainScene.AddLight(l1)
+#Core.mainScene.AddLight(l2)
 
 
 mouse = libtcod.Mouse()
@@ -46,8 +47,13 @@ while not libtcod.console_is_window_closed():
 
     if mouse.lbutton_pressed:
         Core.mainScene.AddLight(Light(x=mouse.cx, y=mouse.cy))
+        Core.log.Log("New light at " + str(mouse.cx) + ", " + str(mouse.cy))
     if mouse.rbutton_pressed:
         Core.mainScene.Lights.pop()
+
+    if key.vk == libtcod.KEY_SPACE:
+        fps = libtcod.sys_get_fps()
+        Core.log.Log("FPS: " + str(fps), color=libtcod.amber)
 
     if key.vk == libtcod.KEY_ESCAPE:
         break
