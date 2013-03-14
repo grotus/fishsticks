@@ -1,5 +1,13 @@
-import libtcodpy as libtcod
-from EngineSettings import *
+# import libtcodpy as libtcod
+# import EngineSettings
+from Scene import Scene
+import Audio
+from gui.MainWindow import MainWindow
 
-con = libtcod.console_new(MAIN_WIDTH, MAIN_HEIGHT)
-panel = libtcod.console_new(SCREEN_WIDTH, 7)
+audio = Audio.Audio()
+audio.play_music('hkblue')
+mainWindow = MainWindow()
+mainScene = Scene(window=mainWindow)
+log = None
+while 1==1:
+	print "herro"

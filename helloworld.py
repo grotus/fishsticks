@@ -1,7 +1,5 @@
 import libtcodpy as libtcod
 import textwrap
-import sys
-import audio
 
 # Window size
 SCREEN_WIDTH = 80
@@ -352,6 +350,7 @@ def player_move_or_attack(dx, dy):
     else:
         player.move(dx, dy)
         fov_recompute = True
+
 
 def handle_keys():
     global playerx, playery, fov_recompute

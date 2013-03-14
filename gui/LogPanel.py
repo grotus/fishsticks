@@ -6,14 +6,15 @@ import libtcodpy as libtcod
 
 class LogPanel(BasePanel):
     """A message/log area"""
-    def __init__(self, parent, x, y, w, h, scrollable=False, color_data=ColorData(), padding=Padding()): # scrollable is not yet supported
-        super(LogPanel, self).__init__(x=x, y=y, w=w, h=h, parent=parent)
-        self.log = Log(w-(padding.left+padding.right), h-(padding.top+padding.bottom), scrollable)
+
+    def __init__(self, parent, rect, scrollable=False, color_data=ColorData(), padding=Padding()):
+        super(LogPanel, self).__init__(rect=rect, parent=parent)
+        self.log = Log(rect.w-(padding.left+padding.right), rect.h-(padding.top+padding.bottom))
         self.color_data = color_data
         self.padding = padding
 
-    def Log(self, new_msg, color = None):
-        col = self.color_data.foreground_color if (color == None) else color
+    def Log(self, new_msg, color=None):
+        col = self.color_data.foreground_color if (color is None) else color
         self.log.Log(new_msg, col)
 
     def Render(self):

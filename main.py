@@ -1,5 +1,4 @@
+#import placeholder.helloworld
+from core import core
 
-import placeholder.helloworld
-
-print 'hurr'
-
+print core.mainScene
