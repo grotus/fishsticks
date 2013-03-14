@@ -1,5 +1,7 @@
 import libtcodpy as libtcod
 import textwrap
+import sys
+import audio
 
 # Window size
 SCREEN_WIDTH = 80
@@ -415,6 +417,9 @@ message('Welcome stranger! Prepare to perish in the Tombs of the Ancient Kings.'
 
 mouse = libtcod.Mouse()
 key = libtcod.Key()
+
+audio = audio.Audio()
+audio.play_music('hkblue')
 
 # Keeps running as long as the window is not closed
 # This is effectively the main loop

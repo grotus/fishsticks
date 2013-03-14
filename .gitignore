@@ -2,3 +2,5 @@
 *.pyc
 libtcod*.so
 placeholder.helloworld
+*.dll
+*.so
