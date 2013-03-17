@@ -9,5 +9,3 @@ audio.play_music('hkblue')
 mainWindow = MainWindow()
 mainScene = Scene(window=mainWindow)
 log = None
-while 1==1:
-	print "herro"
