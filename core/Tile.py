@@ -13,14 +13,11 @@ class Tile(WObject):
         self.Explored = False
 
     def Render(self, window):
-        # TODO: should do a check for visibility and explored first
+        # TODO: should do a check for visibility and explored
 
-        brightness, light_col = Core.mainScene.GetIllumination(self.x, self.y)
-
-        # libtcod.console_set_char_background(window.console, self.x, self.y, self.ColorData.background_color, self.ColorData.background_flag)
-        # libtcod.console_set_char_foreground(window.console, self.x, self.y, self.ColorData.foreground_color)
-        # libtcod.console_put_char(window.console, self.x, self.y, self.Char)
-        libtcod.console_put_char_ex(window.console, self.x, self.y, self.Char, self.ColorData.foreground_color*brightness*light_col, self.ColorData.background_color*brightness*light_col)
+        window.PaintFG(self.x, self.y, self.ColorData.foreground_color)
+        window.PaintBG(self.x, self.y, self.ColorData.background_color)
+        window.SetChar(self.x, self.y, self.Char)
 
         for obj in self.Children:
             obj.Render(window)

@@ -75,10 +75,10 @@ def makeTile(char, x, y):
     col, bgcol = libtcod.white, libtcod.black
     if char == '.':
         col, bgcol = libtcod.chartreuse, libtcod.desaturated_chartreuse
-        #char = ' '
+        char = ' '
     elif char == ';':
         col, bgcol = libtcod.dark_chartreuse, libtcod.darker_chartreuse
-        #char = ' '
+        char = ' '
     elif char == 'T':
         col, bgcol = libtcod.dark_orange, libtcod.desaturated_chartreuse
     elif char == '#':

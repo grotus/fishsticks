@@ -431,6 +431,10 @@ while not libtcod.console_is_window_closed():
     for obj in objects:
         obj.clear()
 
+    if key.vk == libtcod.KEY_SPACE:
+        fps = libtcod.sys_get_fps()
+        print "FPS: " + str(fps)
+
     player_action = handle_keys()
     if player_action == "exit":
         break
