@@ -1,5 +1,7 @@
 import libtcodpy as libtcod
 import textwrap
+import sys
+import audio
 
 # Window size
 SCREEN_WIDTH = 80
