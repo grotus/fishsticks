@@ -33,9 +33,8 @@ class BasePanel(object):
 
     def Render(self):
         """Every panel should implement their own version of Render"""
-        for y in range(self.h):
-            for x in range(self.w):
-                libtcod.console_set_char_background(self.console, x, y, libtcod.light_chartreuse, libtcod.BKGND_SET)
+        libtcod.console_clear(self.console)
+        libtcod.console_set_default_background(self.console, libtcod.light_chartreuse)
 
 
 class TestPanel(BasePanel):
