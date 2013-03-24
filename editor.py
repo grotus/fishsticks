@@ -1,4 +1,6 @@
 import sys
+from core.Light import AmbientLight
+from core.Scene import Scene
 from core.Tile import Tile
 import tiles.SimpleTiles
 import tiles.Nullspace
@@ -7,7 +9,7 @@ from core import EngineSettings, Renderer, Core
 from gui.BasePanel import BasePanel
 from gui.LogPanel import LogPanel
 from helpers.Helpers import *
-from gui.Editor import PalettePanel
+from gui.Editor import PalettePanel, EditorMapWindow
 
 
 if __name__ == '__main__':
@@ -15,6 +17,11 @@ if __name__ == '__main__':
     for arg in sys.argv:
         print arg
 
+
+#-----------------------------------------------------------------------------#
+#
+# Build dictionary of all subclasses of Tile
+#
 
 def FindSubclassesRec(clss):
     """Recursive function to find all subclasses of a class and return them as a list"""
@@ -56,22 +63,27 @@ libtcod.console_set_custom_font('fonts/arial12x12.png', libtcod.FONT_TYPE_GREYSC
 libtcod.console_init_root(EngineSettings.ScreenWidth, EngineSettings.ScreenHeight, 'Light test', False)
 libtcod.sys_set_fps(EngineSettings.FpsLimit)
 
+# Set renderer
+renderers = {libtcod.RENDERER_GLSL: 'RENDERER_GLSL', libtcod.RENDERER_OPENGL: 'RENDERER_OPENGL',
+             libtcod.RENDERER_SDL: 'RENDERER_SDL', libtcod.NB_RENDERERS: 'NB_RENDERERS'}
+libtcod.sys_set_renderer(libtcod.RENDERER_OPENGL)
+print "Renderer:", renderers[libtcod.sys_get_renderer()]
+
+
+
+
 # Panels
-mapView = BasePanel(None, Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight))
+mapView = EditorMapWindow(Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight))
 dataView = LogPanel(None, Rect(0, EngineSettings.ViewHeight, EngineSettings.ScreenWidth, DATA_HEIGHT),
-                   padding=Padding(left=1, right=1, top=0, bottom=1),
-                   color_data=ColorData(background_color=libtcod.sea))
+                    padding=Padding(left=1, right=1, top=0, bottom=1),
+                    color_data=ColorData(background_color=libtcod.sea))
 paletteView = PalettePanel(None, Rect(EngineSettings.ViewWidth, 0, PALETTE_WIDTH, EngineSettings.ScreenHeight), tileDir)
 
 panels = [mapView, dataView, paletteView]
 
 dataView.Log("#******************#")
 
-# Set renderer
-renderers = {libtcod.RENDERER_GLSL:'RENDERER_GLSL', libtcod.RENDERER_OPENGL:'RENDERER_OPENGL',
-             libtcod.RENDERER_SDL:'RENDERER_SDL', libtcod.NB_RENDERERS:'NB_RENDERERS'}
-libtcod.sys_set_renderer(libtcod.RENDERER_OPENGL)
-print "Renderer:", renderers[libtcod.sys_get_renderer()]
+Core.init(Scene(window=mapView, mapW=EngineSettings.ViewWidth, mapH=EngineSettings.ViewHeight, ambientLight=AmbientLight(1.0)))
 
 # Editor main loop
 mouse = libtcod.Mouse()
@@ -79,7 +91,7 @@ key = libtcod.Key()
 while not libtcod.console_is_window_closed():
     libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
 
-    paletteView.HandleInput(key, mouse)
+    [panel.HandleInput(key, mouse) for panel in panels]
 
     # start render
     Renderer.RenderAll(panels)

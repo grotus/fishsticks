@@ -45,7 +45,7 @@ class MainWindow(BasePanel):
 
         #Core.mainScene.CalculateLightmap()
 
-        for row in Core.mainScene.Map:
+        for row in Core.mainScene.Tiles:
             for tile in row:
                 try:
                     tile.Render(self)

@@ -1,4 +1,7 @@
+from core import EngineSettings
 from gui.BasePanel import BasePanel
+from gui.MainWindow import MainWindow
+from helpers.Helpers import Rect
 
 import libtcodpy as libtcod
 
@@ -36,7 +39,6 @@ class PalettePanel(BasePanel):
         if not self.rect.Contains(mouse.cx,  mouse.cy):
             return
         if mouse.lbutton_pressed:
-            print "click", (mouse.cx,  mouse.cy)
             clickedRow = mouse.cy
             clickedItem = self.Items.get(clickedRow, None)
             if clickedItem:
@@ -62,3 +64,13 @@ class PaletteItem(object):
         self.ItemClass = wobj
         self.Dummy = wobj(-1, -1)
         self.y = y
+
+class EditorMapWindow(MainWindow):
+    def __init__(self, rect=Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight)):
+        super(EditorMapWindow, self).__init__(rect=rect)
+
+    def HandleInput(self, key, mouse):
+        if not self.rect.Contains(mouse.cx,  mouse.cy):
+            return
+        if mouse.lbutton_pressed:
+            print "draw at", (mouse.cx,  mouse.cy)

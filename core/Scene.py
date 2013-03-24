@@ -2,16 +2,37 @@
 # Scene
 # Stores a particular set of maptiles, lights, whatnot, that belong together.
 #
+from gui.MainWindow import MainWindow
+from helpers.Helpers import Rect
 import libtcodpy as libtcod
+from tiles.Nullspace import Nullspace
+
 
 class Scene(object):
-    def __init__(self, tiles=[], lights=[], window=None):
-        self.Map = tiles
+    def __init__(self, window=MainWindow(), tiles=None, mapW=0, mapH=0, lights=[], ambientLight=None):
+        if tiles == None:
+            tiles = []
+            for y in xrange(mapH):
+                row = []
+                for x in xrange(mapW):
+                    row.append(Nullspace(x, y))
+                tiles.append(row)
+
+        self.Rect = Rect(0, 0, mapW, mapH)
+        self.Tiles = self.SetTiles(tiles)
         self.PointLights = lights
-        self.AmbientLight = None
+        self.AmbientLight = ambientLight
         self.MainWindow = window
-        self.LightMap = [0]*self.MainWindow.w*self.MainWindow.h
+        self.LightMap = [0]*window.w*window.h
         self.LightColMap = [libtcod.white]*self.MainWindow.w*self.MainWindow.h
+
+
+    def SetTiles(self, tiles):
+        # Might change this to create the light, rather than just be a wrapper for appending to a list
+        self.Tiles = tiles
+        self.Rect = Rect(0, 0, len(tiles), len(tiles[0]))
+        return self.Tiles
+
 
     def AddPointLight(self, light):
         # Might change this to create the light, rather than just be a wrapper for appending to a list
