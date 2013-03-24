@@ -9,8 +9,8 @@ from core.Light import Light, AmbientLight
 
 # Initial libtcod setup...
 libtcod.console_set_custom_font('fonts/arial12x12.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
-libtcod.console_init_root(EngineSettings.SCREEN_WIDTH, EngineSettings.SCREEN_HEIGHT, 'Light test', False)
-libtcod.sys_set_fps(EngineSettings.LIMIT_FPS)
+libtcod.console_init_root(EngineSettings.ScreenWidth, EngineSettings.ScreenHeight, 'Light test', False)
+libtcod.sys_set_fps(EngineSettings.FpsLimit)
 
 # Load testmap into the scene
 Core.mainScene.Map = createTiles(testmap)
@@ -19,7 +19,7 @@ panels = [Core.mainWindow]  # We will pass this list to the Renderer, to render 
 
 
 # Create a message log, with the mainWindow as parent
-gamelog = LogPanel(Core.mainWindow, Rect(0, EngineSettings.SCREEN_HEIGHT-7, EngineSettings.SCREEN_WIDTH, 7),
+gamelog = LogPanel(Core.mainWindow, Rect(0, EngineSettings.ScreenHeight-7, EngineSettings.ScreenWidth, 7),
                    padding=Padding(left=1, right=1, top=1, bottom=1),
                    color_data=ColorData(background_color=libtcod.darkest_sepia))
 Core.log = gamelog
@@ -50,13 +50,13 @@ while not libtcod.console_is_window_closed():
     #show FPS and color under mouse cursor
     (x, y) = (mouse.cx, mouse.cy)
     libtcod.console_set_default_foreground(0, libtcod.white)
-    libtcod.console_print_ex(None, EngineSettings.SCREEN_WIDTH-1, EngineSettings.SCREEN_HEIGHT-4,
+    libtcod.console_print_ex(None, EngineSettings.ScreenWidth-1, EngineSettings.ScreenHeight-4,
                              libtcod.BKGND_SET, libtcod.RIGHT, 'Tile FG: {0}'.format(Core.mainWindow.GetForegroundRGB(x, y)))
-    libtcod.console_print_ex(None, EngineSettings.SCREEN_WIDTH-1, EngineSettings.SCREEN_HEIGHT-3,
+    libtcod.console_print_ex(None, EngineSettings.ScreenWidth-1, EngineSettings.ScreenHeight-3,
                              libtcod.BKGND_SET, libtcod.RIGHT, 'Tile BG: {0}'.format(Core.mainWindow.GetBackgroundRGB(x, y)))
-    libtcod.console_print_ex(None, EngineSettings.SCREEN_WIDTH-1, EngineSettings.SCREEN_HEIGHT-2,
+    libtcod.console_print_ex(None, EngineSettings.ScreenWidth-1, EngineSettings.ScreenHeight-2,
                          libtcod.BKGND_SET, libtcod.RIGHT, 'Light: {0}'.format(Core.mainScene.GetLightAt(x, y)))
-    libtcod.console_print_ex(None, EngineSettings.SCREEN_WIDTH-1, EngineSettings.SCREEN_HEIGHT-1,
+    libtcod.console_print_ex(None, EngineSettings.ScreenWidth-1, EngineSettings.ScreenHeight-1,
                              libtcod.BKGND_SET, libtcod.RIGHT, '%3d FPS' % libtcod.sys_get_fps())
 
     libtcod.console_flush()  # draw the console

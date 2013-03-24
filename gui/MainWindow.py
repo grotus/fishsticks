@@ -4,7 +4,7 @@ from gui.BasePanel import BasePanel
 import libtcodpy as libtcod
 
 class MainWindow(BasePanel):
-    def __init__(self, rect=Rect(0, 0, EngineSettings.MAIN_WIDTH, EngineSettings.MAIN_HEIGHT)):
+    def __init__(self, rect=Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight)):
         super(MainWindow, self).__init__(rect=rect)
         self.ResetBuffers()
 

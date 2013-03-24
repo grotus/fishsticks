@@ -7,18 +7,18 @@ import libtcodpy as libtcod
 
 # Initial libtcod setup...
 libtcod.console_set_custom_font('fonts/arial12x12.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
-libtcod.console_init_root(EngineSettings.SCREEN_WIDTH, EngineSettings.SCREEN_HEIGHT, 'python/libtcod tutorial', False)
-libtcod.sys_set_fps(EngineSettings.LIMIT_FPS)
+libtcod.console_init_root(EngineSettings.ScreenWidth, EngineSettings.ScreenHeight, 'python/libtcod tutorial', False)
+libtcod.sys_set_fps(EngineSettings.FpsLimit)
 
 # Some gui panels to test
-mainpanel = BasePanel(None, Rect(0, 0, EngineSettings.SCREEN_WIDTH, EngineSettings.SCREEN_HEIGHT))
+mainpanel = BasePanel(None, Rect(0, 0, EngineSettings.ScreenWidth, EngineSettings.ScreenHeight))
 subpanel = TestPanel(mainpanel, Rect(10, 10, 20, 20))
 
 panels = [mainpanel]  # We will pass this list to the Renderer, to render the tree of panels
 
 
 # Create a log area and some log messages
-gamelog = LogPanel(mainpanel, Rect(0, EngineSettings.SCREEN_HEIGHT-7, EngineSettings.SCREEN_WIDTH, 7),
+gamelog = LogPanel(mainpanel, Rect(0, EngineSettings.ScreenHeight-7, EngineSettings.ScreenWidth, 7),
                    padding=Padding(left=1, right=1, top=1, bottom=1),
                    color_data=ColorData(background_color=libtcod.darkest_sepia))
 
