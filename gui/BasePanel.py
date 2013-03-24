@@ -5,6 +5,7 @@ from helpers.Helpers import Rect
 class BasePanel(object):
     """Base class for gui panels"""
     def __init__(self, parent=None, rect=Rect(0, 0, 80, 50)):
+        self.rect = rect
         self.x = rect.x
         self.y = rect.y
         self.w = rect.w
@@ -32,9 +33,13 @@ class BasePanel(object):
         panel.parent = None
 
     def Render(self):
-        """Every panel should implement their own version of Render"""
+        """Every panel should implement their own version of this method"""
         libtcod.console_clear(self.console)
         libtcod.console_set_default_background(self.console, libtcod.light_chartreuse)
+
+    def HandleInput(self, key, mouse):
+        """Every panel that needs to handle input should implement their own version of this method"""
+        pass
 
 
 class TestPanel(BasePanel):

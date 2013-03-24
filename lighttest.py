@@ -39,6 +39,8 @@ gamelog.Log("There are {0} point lights".format(len(Core.mainScene.PointLights))
 testcol = libtcod.white * libtcod.yellow
 gamelog.Log("Color: {}".format(testcol))
 
+libtcod.sys_set_renderer(libtcod.RENDERER_OPENGL)
+
 mouse = libtcod.Mouse()
 key = libtcod.Key()
 while not libtcod.console_is_window_closed():

@@ -3,6 +3,37 @@ from helpers.Helpers import Rect
 from gui.BasePanel import BasePanel
 import libtcodpy as libtcod
 
+import array, struct
+from ctypes import create_string_buffer
+from libtcodpy import _lib
+def console_fill_background(con,r,g,b) :
+##    r = array.array('i',r)
+##    g = array.array('i',g)
+##    b = array.array('i',b)
+##    cr = r.buffer_info()[0]
+##    cg = g.buffer_info()[0]
+##    cb = b.buffer_info()[0]
+    s = struct.Struct('%di' % len(r))
+    cr = s.pack(*r)
+    cg = s.pack(*g)
+    cb = s.pack(*b)
+
+    _lib.TCOD_console_fill_background(con, cr, cg, cb)
+
+def console_fill_foreground(con,r,g,b) :
+##    r = array.array('i',r)
+##    g = array.array('i',g)
+##    b = array.array('i',b)
+##    cr = r.buffer_info()[0]
+##    cg = g.buffer_info()[0]
+##    cb = b.buffer_info()[0]
+    s = struct.Struct('%di' % len(r))
+    cr = s.pack(*r)
+    cg = s.pack(*g)
+    cb = s.pack(*b)
+
+    _lib.TCOD_console_fill_foreground(con, cr, cg, cb)
+
 class MainWindow(BasePanel):
     def __init__(self, rect=Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight)):
         super(MainWindow, self).__init__(rect=rect)
@@ -25,8 +56,8 @@ class MainWindow(BasePanel):
         self.ApplyLights()
 
         # By now the RGB buffers should be filled.
-        libtcod.console_fill_background(self.console, self.Bg_R, self.Bg_G, self.Bg_B)
-        libtcod.console_fill_foreground(self.console, self.Fg_R, self.Fg_G, self.Fg_B)
+        console_fill_background(self.console, self.Bg_R, self.Bg_G, self.Bg_B)
+        console_fill_foreground(self.console, self.Fg_R, self.Fg_G, self.Fg_B)
         libtcod.console_fill_char(self.console, self.Char)
 
     def ApplyLights(self):

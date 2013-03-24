@@ -5,7 +5,7 @@ import Audio
 from gui.MainWindow import MainWindow
 
 audio = Audio.Audio()
-audio.play_music('hkblue')
+#audio.play_music('hkblue')
 mainWindow = MainWindow()
 mainScene = Scene(window=mainWindow)
 log = None

@@ -7,6 +7,7 @@ from core import EngineSettings, Renderer, Core
 from gui.BasePanel import BasePanel
 from gui.LogPanel import LogPanel
 from helpers.Helpers import *
+from gui.Editor import PalettePanel
 
 
 if __name__ == '__main__':
@@ -41,7 +42,7 @@ print tileDir
 # Engine / libtcod setup
 #
 
-PALETTE_WIDTH = 20
+PALETTE_WIDTH = 40
 DATA_HEIGHT = 10
 
 EngineSettings.FpsLimit = 2000
@@ -60,21 +61,25 @@ mapView = BasePanel(None, Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.Vi
 dataView = LogPanel(None, Rect(0, EngineSettings.ViewHeight, EngineSettings.ScreenWidth, DATA_HEIGHT),
                    padding=Padding(left=1, right=1, top=0, bottom=1),
                    color_data=ColorData(background_color=libtcod.sea))
-paletteView = LogPanel(None, Rect(EngineSettings.ViewWidth, 0, PALETTE_WIDTH, EngineSettings.ScreenHeight),
-                   padding=Padding(left=0, right=0, top=0, bottom=0),
-                   color_data=ColorData(background_color=libtcod.sepia))
+paletteView = PalettePanel(None, Rect(EngineSettings.ViewWidth, 0, PALETTE_WIDTH, EngineSettings.ScreenHeight), tileDir)
 
 panels = [mapView, dataView, paletteView]
 
 dataView.Log("#******************#")
-paletteView.Log("#******************#")
 
+# Set renderer
+renderers = {libtcod.RENDERER_GLSL:'RENDERER_GLSL', libtcod.RENDERER_OPENGL:'RENDERER_OPENGL',
+             libtcod.RENDERER_SDL:'RENDERER_SDL', libtcod.NB_RENDERERS:'NB_RENDERERS'}
+libtcod.sys_set_renderer(libtcod.RENDERER_OPENGL)
+print "Renderer:", renderers[libtcod.sys_get_renderer()]
 
 # Editor main loop
 mouse = libtcod.Mouse()
 key = libtcod.Key()
 while not libtcod.console_is_window_closed():
     libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
+
+    paletteView.HandleInput(key, mouse)
 
     # start render
     Renderer.RenderAll(panels)

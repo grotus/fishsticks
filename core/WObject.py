@@ -18,6 +18,18 @@ class WObject(object):
         self.Char = " "
         self.ColorData = ColorData()
 
+    @property
+    def BgCol(self):
+        return self.ColorData.background_color
+
+    @property
+    def Col(self):
+        return self.ColorData.foreground_color
+
+    @property
+    def BgFlag(self):
+        return self.ColorData.background_flag
+
     def Coord(self):
         return (self.x, self.y)
 
