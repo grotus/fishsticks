@@ -1,7 +1,7 @@
 # bunch of random testing
 from core import EngineSettings, Renderer
 from gui.BasePanel import BasePanel, TestPanel
-from gui.Helpers import Padding, ColorData, Rect
+from helpers.Helpers import Padding, ColorData, Rect
 from gui.LogPanel import LogPanel
 import libtcodpy as libtcod
 

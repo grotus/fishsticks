@@ -1,7 +1,7 @@
 #
 # Base class for world objects (anything that's present in the world)
 #
-from gui.Helpers import ColorData
+from helpers.Helpers import ColorData
 
 
 class WObject(object):

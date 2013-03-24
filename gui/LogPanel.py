@@ -1,5 +1,5 @@
 from gui.BasePanel import BasePanel
-from gui.Helpers import ColorData, Padding
+from helpers.Helpers import ColorData, Padding
 from gui.Log import Log
 import libtcodpy as libtcod
 

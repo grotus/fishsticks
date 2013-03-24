@@ -22,10 +22,8 @@ class ColorData(object):
         self.foreground_color = foreground_color
         self.background_flag = background_flag
 
-# Lifted from the libtcod python tutorial
-class Rect(object):
-    """A rectangle on the map, characterising a room"""
 
+class Rect(object):
     def __init__(self, x, y, w, h):
         self.x = x
         self.y = y

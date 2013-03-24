@@ -1,5 +1,5 @@
 from core import EngineSettings
-from gui.Helpers import Rect
+from helpers.Helpers import Rect
 from gui.BasePanel import BasePanel
 import libtcodpy as libtcod
 

@@ -1,5 +1,5 @@
 import libtcodpy as libtcod
-from gui.Helpers import Rect
+from helpers.Helpers import Rect
 
 
 class BasePanel(object):

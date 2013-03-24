@@ -1,7 +1,7 @@
 # bunch of random testing
 from Readers.BasicAsciiReader import createTiles, testmap
 from core import EngineSettings, Renderer, Core
-from gui.Helpers import Padding, ColorData, Rect
+from helpers.Helpers import Padding, ColorData, Rect
 from gui.LogPanel import LogPanel
 import libtcodpy as libtcod
 from core.Light import Light, AmbientLight

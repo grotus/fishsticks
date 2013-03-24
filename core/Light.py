@@ -1,4 +1,4 @@
-from gui.Helpers import Rect
+from helpers.Helpers import Rect
 import libtcodpy as libtcod
 from core import Core
 
