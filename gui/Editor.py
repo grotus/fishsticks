@@ -65,19 +65,44 @@ class PaletteItem(object):
         self.Dummy = wobj(-1, -1)
         self.y = y
 
+
 class EditorMapWindow(MainWindow):
     def __init__(self, palette, rect):
         super(EditorMapWindow, self).__init__(rect=rect)
-        self.Palette = palette
-        self.__lastX = -1
-        self.__lastY = -1
 
     def HandleInput(self, key, mouse):
         if not self.rect.Contains(mouse.cx,  mouse.cy):
+            return
+        pass
+
+
+class Brush(object):
+    """docstring for Brush"""
+    def __init__(self, canvas, palette):
+        super(Brush, self).__init__()
+        self.Canvas = canvas
+        self.Palette = palette
+        self.Size = 1
+
+        self.__lastX = -1
+        self.__lastY = -1
+
+
+    def HandleInput(self, key, mouse):
+        if not self.Canvas.rect.Contains(mouse.cx,  mouse.cy):
             return
         if mouse.lbutton and (mouse.cx, mouse.cy) != (self.__lastX, self.__lastY):
             self.__lastX, self.__lastY = mouse.cx, mouse.cy
             mapX, mapY = mouse.cx, mouse.cy # will need to translate this later, to account for map scrolling
             brush = self.Palette.Selected
-            print "draw", brush.Name, "at", (mouse.cx,  mouse.cy)
-            Core.mainScene.SetTile(mapX, mapY, brush.ItemClass(mapX, mapY))
+            if not Core.mainScene.GetTile(mapX, mapY).__class__ == brush.ItemClass:
+                #print "draw", brush.Name, "at", (mouse.cx,  mouse.cy)
+                Core.mainScene.SetTile(mapX, mapY, brush.ItemClass(mapX, mapY))
+
+        if mouse.wheel_up:
+            self.Size = min(self.Size + 1, 5)
+            print "Brush size", self.Size
+        if mouse.wheel_down:
+            self.Size = max(self.Size - 1, 1)
+            print "Brush size", self.Size
+        

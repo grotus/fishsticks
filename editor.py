@@ -9,7 +9,7 @@ from core import EngineSettings, Renderer, Core
 from gui.BasePanel import BasePanel
 from gui.LogPanel import LogPanel
 from helpers.Helpers import *
-from gui.Editor import PalettePanel, EditorMapWindow
+from gui.Editor import PalettePanel, EditorMapWindow, Brush
 
 
 if __name__ == '__main__':
@@ -85,6 +85,8 @@ dataView.Log("#******************#")
 
 Core.init(Scene(window=mapView, mapW=EngineSettings.ViewWidth, mapH=EngineSettings.ViewHeight, ambientLight=AmbientLight(1.0)))
 
+brush = Brush(mapView, paletteView)
+
 # Editor main loop
 mouse = libtcod.Mouse()
 key = libtcod.Key()
@@ -92,6 +94,7 @@ while not libtcod.console_is_window_closed():
     libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
 
     [panel.HandleInput(key, mouse) for panel in panels]
+    brush.HandleInput(key, mouse)
 
     # start render
     Renderer.RenderAll(panels)
