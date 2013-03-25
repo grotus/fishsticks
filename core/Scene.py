@@ -13,13 +13,11 @@ class Scene(object):
         if tiles == None:
             tiles = []
             for y in xrange(mapH):
-                row = []
                 for x in xrange(mapW):
-                    row.append(Nullspace(x, y))
-                tiles.append(row)
+                    tiles.append(Nullspace(x, y))
 
-        self.Rect = Rect(0, 0, mapW, mapH)
-        self.Tiles = self.SetTiles(tiles)
+        self.Rect = None # Assigned with the next call
+        self.Tiles = self.SetTiles(tiles, mapW, mapH)
         self.PointLights = lights
         self.AmbientLight = ambientLight
         self.MainWindow = window
@@ -27,11 +25,24 @@ class Scene(object):
         self.LightColMap = [libtcod.white]*self.MainWindow.w*self.MainWindow.h
 
 
-    def SetTiles(self, tiles):
+    def SetTiles(self, tiles, w, h):
         # Might change this to create the light, rather than just be a wrapper for appending to a list
+        if len(tiles) != w*h:
+            raise Exception('Specified dimensions does not match size of tile list')
         self.Tiles = tiles
-        self.Rect = Rect(0, 0, len(tiles), len(tiles[0]))
+        self.Rect = Rect(0, 0, w, h)
         return self.Tiles
+
+    def GetTile(self, x, y):
+        if not self.Rect.Contains(x,y):
+            return None
+        return self.Tiles[self.Rect.w*y+x]
+
+
+    def SetTile(self, x, y, tile):
+        if self.Rect.Contains(x,y):
+            self.Tiles[self.Rect.w*y+x] = tile
+
 
 
     def AddPointLight(self, light):

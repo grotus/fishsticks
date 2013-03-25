@@ -45,12 +45,11 @@ class MainWindow(BasePanel):
 
         #Core.mainScene.CalculateLightmap()
 
-        for row in Core.mainScene.Tiles:
-            for tile in row:
-                try:
-                    tile.Render(self)
-                except Exception, e:
-                    raise e
+        for tile in Core.mainScene.Tiles:
+            try:
+                tile.Render(self)
+            except Exception, e:
+                raise e
 
         # apply lights
         self.ApplyLights()
