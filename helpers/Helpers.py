@@ -45,5 +45,5 @@ class Rect(object):
                 self.yMin <= other.yMax and self.yMax >= other.yMin)
 
     def Contains(self, x, y):
-        return (self.xMin <= x and self.xMax >= x and
-                self.yMin <= y and self.yMax >= y)
+        return (self.xMin <= x and self.xMax > x and
+                self.yMin <= y and self.yMax > y)

@@ -1,4 +1,4 @@
-from core import EngineSettings
+from core import EngineSettings, Core
 from gui.BasePanel import BasePanel
 from gui.MainWindow import MainWindow
 from helpers.Helpers import Rect
@@ -66,11 +66,18 @@ class PaletteItem(object):
         self.y = y
 
 class EditorMapWindow(MainWindow):
-    def __init__(self, rect=Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight)):
+    def __init__(self, palette, rect):
         super(EditorMapWindow, self).__init__(rect=rect)
+        self.Palette = palette
+        self.__lastX = -1
+        self.__lastY = -1
 
     def HandleInput(self, key, mouse):
         if not self.rect.Contains(mouse.cx,  mouse.cy):
             return
-        if mouse.lbutton_pressed:
-            print "draw at", (mouse.cx,  mouse.cy)
+        if mouse.lbutton and (mouse.cx, mouse.cy) != (self.__lastX, self.__lastY):
+            self.__lastX, self.__lastY = mouse.cx, mouse.cy
+            mapX, mapY = mouse.cx, mouse.cy # will need to translate this later, to account for map scrolling
+            brush = self.Palette.Selected
+            print "draw", brush.Name, "at", (mouse.cx,  mouse.cy)
+            Core.mainScene.SetTile(mapX, mapY, brush.ItemClass(mapX, mapY))

@@ -73,11 +73,11 @@ print "Renderer:", renderers[libtcod.sys_get_renderer()]
 
 
 # Panels
-mapView = EditorMapWindow(Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight))
+paletteView = PalettePanel(None, Rect(EngineSettings.ViewWidth, 0, PALETTE_WIDTH, EngineSettings.ScreenHeight), tileDir)
+mapView = EditorMapWindow(paletteView, Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight))
 dataView = LogPanel(None, Rect(0, EngineSettings.ViewHeight, EngineSettings.ScreenWidth, DATA_HEIGHT),
                     padding=Padding(left=1, right=1, top=0, bottom=1),
                     color_data=ColorData(background_color=libtcod.sea))
-paletteView = PalettePanel(None, Rect(EngineSettings.ViewWidth, 0, PALETTE_WIDTH, EngineSettings.ScreenHeight), tileDir)
 
 panels = [mapView, dataView, paletteView]
 
