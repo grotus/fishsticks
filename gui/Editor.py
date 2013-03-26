@@ -91,18 +91,27 @@ class Brush(object):
     def HandleInput(self, key, mouse):
         if not self.Canvas.rect.Contains(mouse.cx,  mouse.cy):
             return
+
+        if (mouse.dcx, mouse.dcy) != (0, 0):
+            self.__lastX, self.__lastY = -1, -1
+
         if mouse.lbutton and (mouse.cx, mouse.cy) != (self.__lastX, self.__lastY):
             self.__lastX, self.__lastY = mouse.cx, mouse.cy
             mapX, mapY = mouse.cx, mouse.cy # will need to translate this later, to account for map scrolling
-            brush = self.Palette.Selected
-            if not Core.mainScene.GetTile(mapX, mapY).__class__ == brush.ItemClass:
-                #print "draw", brush.Name, "at", (mouse.cx,  mouse.cy)
-                Core.mainScene.SetTile(mapX, mapY, brush.ItemClass(mapX, mapY))
+            self.Paint(mapX, mapY)
 
         if mouse.wheel_up:
-            self.Size = min(self.Size + 1, 5)
+            self.Size = min(self.Size + 1, 10)
             print "Brush size", self.Size
         if mouse.wheel_down:
             self.Size = max(self.Size - 1, 1)
             print "Brush size", self.Size
-        
+
+    def Paint(self, x, y):
+        brush = self.Palette.Selected
+        size = self.Size - 1
+        for py in xrange(y-size, y+size+1):
+            for px in xrange(x-size, x+size+1):
+                if not Core.mainScene.GetTile(px, py).__class__ == brush.ItemClass:
+                    #print "draw", brush.Name, "at", (mouse.cx,  mouse.cy)
+                    Core.mainScene.SetTile(px, py, brush.ItemClass(px, py))
