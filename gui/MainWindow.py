@@ -52,11 +52,11 @@ class MainWindow(BasePanel):
                 raise e
 
         # apply lights
-        self.ApplyLights()
+        ((Fg_R, Fg_G, Fg_B), (Bg_R, Bg_G, Bg_B)) = self.ApplyLights()  # Get lit versions of the color buffers
 
         # By now the RGB buffers should be filled.
-        console_fill_background(self.console, self.Bg_R, self.Bg_G, self.Bg_B)
-        console_fill_foreground(self.console, self.Fg_R, self.Fg_G, self.Fg_B)
+        console_fill_background(self.console, Bg_R, Bg_G, Bg_B)
+        console_fill_foreground(self.console, Fg_R, Fg_G, Fg_B)
         libtcod.console_fill_char(self.console, self.Char)
 
     def ApplyLights(self):
@@ -72,13 +72,21 @@ class MainWindow(BasePanel):
 
         # Light strength
         scene_light_map = Core.mainScene.LightMap
-        ambient_brightness = 0 if (Core.mainScene.AmbientLight==None) else Core.mainScene.AmbientLight.Brightness
-        self.Fg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_R, scene_light_map)]
-        self.Fg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_G, scene_light_map)]
-        self.Fg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_B, scene_light_map)]
-        self.Bg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_R, scene_light_map)]
-        self.Bg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_G, scene_light_map)]
-        self.Bg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_B, scene_light_map)]
+        ambient_brightness = 0 if (Core.mainScene.AmbientLight is None) else Core.mainScene.AmbientLight.Brightness
+        # self.Fg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_R, scene_light_map)]
+        # self.Fg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_G, scene_light_map)]
+        # self.Fg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_B, scene_light_map)]
+        # self.Bg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_R, scene_light_map)]
+        # self.Bg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_G, scene_light_map)]
+        # self.Bg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_B, scene_light_map)]
+
+        Fg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_R, scene_light_map)]
+        Fg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_G, scene_light_map)]
+        Fg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_B, scene_light_map)]
+        Bg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_R, scene_light_map)]
+        Bg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_G, scene_light_map)]
+        Bg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_B, scene_light_map)]
+        return ((Fg_R, Fg_G, Fg_B), (Bg_R, Bg_G, Bg_B))
 
     def PaintBG(self, x, y, col):
         self.Bg_R[self.w * y + x] = col.r

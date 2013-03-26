@@ -8,3 +8,4 @@ class Nullspace(core.Tile.Tile):
         self.Char = '?'
         self.ColorData = ColorData(libtcod.black, libtcod.dark_gray, libtcod.BKGND_SET)
         self.Explored = False
+

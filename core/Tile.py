@@ -12,13 +12,16 @@ class Tile(WObject):
         self.Explored = False
         self.BlockMove = blockMove
         self.BlockSight = blockSight
+        self.IsDirty = True  # Determines if the tile should be re-drawn
 
     def Render(self, window):
         # TODO: should do a check for visibility and explored
 
-        window.PaintFG(self.x, self.y, self.ColorData.foreground_color)
-        window.PaintBG(self.x, self.y, self.ColorData.background_color)
-        window.SetChar(self.x, self.y, self.Char)
+        if self.IsDirty:
+            window.PaintFG(self.x, self.y, self.ColorData.foreground_color)
+            window.PaintBG(self.x, self.y, self.ColorData.background_color)
+            window.SetChar(self.x, self.y, self.Char)
+            self.IsDirty = False
 
         for obj in self.Children:
             obj.Render(window)
