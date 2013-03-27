@@ -1,10 +1,41 @@
-from core import EngineSettings
-from gui.Helpers import Rect
+from core import EngineSettings, Renderer
+from helpers.Helpers import Rect
 from gui.BasePanel import BasePanel
 import libtcodpy as libtcod
 
+import array, struct
+from ctypes import create_string_buffer
+from libtcodpy import _lib
+def console_fill_background(con,r,g,b) :
+##    r = array.array('i',r)
+##    g = array.array('i',g)
+##    b = array.array('i',b)
+##    cr = r.buffer_info()[0]
+##    cg = g.buffer_info()[0]
+##    cb = b.buffer_info()[0]
+    s = struct.Struct('%di' % len(r))
+    cr = s.pack(*r)
+    cg = s.pack(*g)
+    cb = s.pack(*b)
+
+    _lib.TCOD_console_fill_background(con, cr, cg, cb)
+
+def console_fill_foreground(con,r,g,b) :
+##    r = array.array('i',r)
+##    g = array.array('i',g)
+##    b = array.array('i',b)
+##    cr = r.buffer_info()[0]
+##    cg = g.buffer_info()[0]
+##    cb = b.buffer_info()[0]
+    s = struct.Struct('%di' % len(r))
+    cr = s.pack(*r)
+    cg = s.pack(*g)
+    cb = s.pack(*b)
+
+    _lib.TCOD_console_fill_foreground(con, cr, cg, cb)
+
 class MainWindow(BasePanel):
-    def __init__(self, rect=Rect(0, 0, EngineSettings.MAIN_WIDTH, EngineSettings.MAIN_HEIGHT)):
+    def __init__(self, rect=Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight)):
         super(MainWindow, self).__init__(rect=rect)
         self.ResetBuffers()
 
@@ -12,21 +43,25 @@ class MainWindow(BasePanel):
     def Render(self):
         from core import Core  # importing here to circumvent an annoying circular import dependency
 
-        #Core.mainScene.CalculateLightmap()
+        while len(Renderer.RenderStack) > 0:
+            try:
+                tile = Renderer.RenderStack.pop()
+                tile.Render(self)
+            except Exception, e:
+                raise e
 
-        for row in Core.mainScene.Map:
-            for tile in row:
-                try:
-                    tile.Render(self)
-                except Exception, e:
-                    raise e
+        # for tile in Core.mainScene.Tiles:
+        #     try:
+        #         tile.Render(self)
+        #     except Exception, e:
+        #         raise e
 
         # apply lights
-        self.ApplyLights()
+        ((Fg_R, Fg_G, Fg_B), (Bg_R, Bg_G, Bg_B)) = self.ApplyLights()  # Get lit versions of the color buffers
 
         # By now the RGB buffers should be filled.
-        libtcod.console_fill_background(self.console, self.Bg_R, self.Bg_G, self.Bg_B)
-        libtcod.console_fill_foreground(self.console, self.Fg_R, self.Fg_G, self.Fg_B)
+        console_fill_background(self.console, Bg_R, Bg_G, Bg_B)
+        console_fill_foreground(self.console, Fg_R, Fg_G, Fg_B)
         libtcod.console_fill_char(self.console, self.Char)
 
     def ApplyLights(self):
@@ -42,13 +77,21 @@ class MainWindow(BasePanel):
 
         # Light strength
         scene_light_map = Core.mainScene.LightMap
-        ambient_brightness = 0 if (Core.mainScene.AmbientLight==None) else Core.mainScene.AmbientLight.Brightness
-        self.Fg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_R, scene_light_map)]
-        self.Fg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_G, scene_light_map)]
-        self.Fg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_B, scene_light_map)]
-        self.Bg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_R, scene_light_map)]
-        self.Bg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_G, scene_light_map)]
-        self.Bg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_B, scene_light_map)]
+        ambient_brightness = 0 if (Core.mainScene.AmbientLight is None) else Core.mainScene.AmbientLight.Brightness
+        # self.Fg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_R, scene_light_map)]
+        # self.Fg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_G, scene_light_map)]
+        # self.Fg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_B, scene_light_map)]
+        # self.Bg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_R, scene_light_map)]
+        # self.Bg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_G, scene_light_map)]
+        # self.Bg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_B, scene_light_map)]
+
+        Fg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_R, scene_light_map)]
+        Fg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_G, scene_light_map)]
+        Fg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Fg_B, scene_light_map)]
+        Bg_R = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_R, scene_light_map)]
+        Bg_G = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_G, scene_light_map)]
+        Bg_B = [int(min(v*(s + ambient_brightness), 255)) for v, s in zip(self.Bg_B, scene_light_map)]
+        return ((Fg_R, Fg_G, Fg_B), (Bg_R, Bg_G, Bg_B))
 
     def PaintBG(self, x, y, col):
         self.Bg_R[self.w * y + x] = col.r

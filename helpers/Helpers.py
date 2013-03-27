@@ -22,10 +22,8 @@ class ColorData(object):
         self.foreground_color = foreground_color
         self.background_flag = background_flag
 
-# Lifted from the libtcod python tutorial
-class Rect(object):
-    """A rectangle on the map, characterising a room"""
 
+class Rect(object):
     def __init__(self, x, y, w, h):
         self.x = x
         self.y = y
@@ -36,12 +34,16 @@ class Rect(object):
         self.w = w
         self.h = h
 
-    def center(self):
+    def Center(self):
         center_x = (self.xMin + self.xMax) / 2
         center_y = (self.yMin + self.yMax) / 2
         return (center_x, center_y)
 
-    def intersect(self, other):
+    def Intersect(self, other):
         #returns true if this rectangle intersects with another one
         return (self.xMin <= other.xMax and self.xMax >= other.xMin and
                 self.yMin <= other.yMax and self.yMax >= other.yMin)
+
+    def Contains(self, x, y):
+        return (self.xMin <= x and self.xMax > x and
+                self.yMin <= y and self.yMax > y)

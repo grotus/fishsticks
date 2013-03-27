@@ -1,4 +1,4 @@
-#import placeholder.helloworld
-from core import core
+import placeholder.helloworld
+from core import Core
 
-print core.mainScene
+print Core.mainScene

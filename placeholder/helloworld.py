@@ -188,7 +188,7 @@ def make_map():
                 #connect it to the previous room with a tunnel
 
                 #center coordinates of previous room
-                (prev_x, prev_y) = rooms[num_rooms-1].center()
+                (prev_x, prev_y) = rooms[num_rooms-1].Center()
 
                 #draw a coin (random number that is either 0 or 1)
                 if libtcod.random_get_int(0, 0, 1) == 1:

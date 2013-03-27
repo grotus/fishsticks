@@ -1,10 +1,11 @@
 import libtcodpy as libtcod
-from gui.Helpers import Rect
+from helpers.Helpers import Rect
 
 
 class BasePanel(object):
     """Base class for gui panels"""
     def __init__(self, parent=None, rect=Rect(0, 0, 80, 50)):
+        self.rect = rect
         self.x = rect.x
         self.y = rect.y
         self.w = rect.w
@@ -16,6 +17,9 @@ class BasePanel(object):
         if parent is not None:
             parent.children.append(self)
             self.parent = parent
+
+    def Contains(self, x, y):
+        return self.rect.Contains(x, y)
 
     def GetParent(self):
         return self.parent
@@ -32,10 +36,13 @@ class BasePanel(object):
         panel.parent = None
 
     def Render(self):
-        """Every panel should implement their own version of Render"""
-        for y in range(self.h):
-            for x in range(self.w):
-                libtcod.console_set_char_background(self.console, x, y, libtcod.light_chartreuse, libtcod.BKGND_SET)
+        """Every panel should implement their own version of this method"""
+        libtcod.console_clear(self.console)
+        libtcod.console_set_default_background(self.console, libtcod.light_chartreuse)
+
+    def HandleInput(self, key, mouse):
+        """Every panel that needs to handle input should implement their own version of this method"""
+        pass
 
 
 class TestPanel(BasePanel):
