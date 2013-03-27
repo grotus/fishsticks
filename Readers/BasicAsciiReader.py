@@ -2,6 +2,7 @@
 # At the moment, this one is just for a quick test
 # Turns ascii into Tiles
 #
+from core import Renderer
 
 import libtcodpy as libtcod
 from core.Tile import Tile
@@ -55,8 +56,9 @@ testmap = """
 
 
 
-def createTiles(mapstring):
+def createTiles():
     """Returns a matrix of map tiles"""
+    Renderer.Clear()
     map = []
     w, h = len(testmap[0]), len(testmap)
     x, y = 0, 0

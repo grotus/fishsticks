@@ -1,5 +1,11 @@
 import libtcodpy as libtcod
 
+RenderStack = []  # tiles to be rendered. Might move elsewhere.
+
+def Clear():
+    global RenderStack
+    RenderStack = []
+
 def RenderAll(panels):
     for panel in panels:
         panel.Render()

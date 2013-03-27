@@ -112,6 +112,7 @@ class Brush(object):
         size = self.Size - 1
         for py in xrange(y-size, y+size+1):
             for px in xrange(x-size, x+size+1):
-                if not Core.mainScene.GetTile(px, py).__class__ == brush.ItemClass:
+                if Core.mainScene.Contains(px, py) and\
+                        (not Core.mainScene.GetTile(px, py).__class__ == brush.ItemClass):
                     #print "draw", brush.Name, "at", (mouse.cx,  mouse.cy)
                     Core.mainScene.SetTile(px, py, brush.ItemClass(px, py))

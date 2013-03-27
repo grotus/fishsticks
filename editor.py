@@ -75,13 +75,16 @@ print "Renderer:", renderers[libtcod.sys_get_renderer()]
 # Panels
 paletteView = PalettePanel(None, Rect(EngineSettings.ViewWidth, 0, PALETTE_WIDTH, EngineSettings.ScreenHeight), tileDir)
 mapView = EditorMapWindow(paletteView, Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight))
-dataView = LogPanel(None, Rect(0, EngineSettings.ViewHeight, EngineSettings.ScreenWidth, DATA_HEIGHT),
-                    padding=Padding(left=1, right=1, top=0, bottom=1),
-                    color_data=ColorData(background_color=libtcod.sea))
+dataView = LogPanel(None, Rect(0, EngineSettings.ViewHeight, EngineSettings.ViewWidth, DATA_HEIGHT),
+                    padding=Padding(left=1, right=1, top=1, bottom=1),
+                    color_data=ColorData(background_color=libtcod.sepia))
 
 panels = [mapView, dataView, paletteView]
 
-dataView.Log("#******************#")
+dataView.Log("NO, YOU CAN'T SAVE ANYTHING YET", libtcod.dark_cyan)
+dataView.Log(".", libtcod.sepia)
+dataView.Log("Mouse wheel changes brush size")
+dataView.Log("Tile palette is populated from the contents of the tiles.SimpleTiles namespace/file at the moment")
 
 Core.init(Scene(window=mapView, mapW=EngineSettings.ViewWidth, mapH=EngineSettings.ViewHeight, ambientLight=AmbientLight(1.0)))
 

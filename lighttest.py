@@ -18,7 +18,7 @@ libtcod.sys_set_renderer(libtcod.RENDERER_OPENGL)
 Core.init()
 
 # Load testmap into the scene
-testTiles, w, h = createTiles(testmap)
+testTiles, w, h = createTiles()
 Core.mainScene.SetTiles(testTiles, w, h)
 
 panels = [Core.mainWin]  # We will pass this list to the Renderer, to render the tree of panels

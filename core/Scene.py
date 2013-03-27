@@ -6,11 +6,13 @@ from gui.MainWindow import MainWindow
 from helpers.Helpers import Rect
 import libtcodpy as libtcod
 from tiles.Nullspace import Nullspace
+from core import Renderer
 
 
 class Scene(object):
     def __init__(self, window=MainWindow(), tiles=None, mapW=0, mapH=0, lights=[], ambientLight=None):
         if tiles == None:
+            Renderer.Clear()
             tiles = []
             for y in xrange(mapH):
                 for x in xrange(mapW):
@@ -23,6 +25,10 @@ class Scene(object):
         self.MainWindow = window
         self.LightMap = [0]*window.w*window.h
         self.LightColMap = [libtcod.white]*self.MainWindow.w*self.MainWindow.h
+
+
+    def Contains(self, x, y):
+        return self.MainWindow.rect.Contains(x, y)
 
 
     def SetTiles(self, tiles, w, h):

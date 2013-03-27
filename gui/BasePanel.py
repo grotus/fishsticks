@@ -18,6 +18,9 @@ class BasePanel(object):
             parent.children.append(self)
             self.parent = parent
 
+    def Contains(self, x, y):
+        return self.rect.Contains(x, y)
+
     def GetParent(self):
         return self.parent
 

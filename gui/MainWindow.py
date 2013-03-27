@@ -1,4 +1,4 @@
-from core import EngineSettings
+from core import EngineSettings, Renderer
 from helpers.Helpers import Rect
 from gui.BasePanel import BasePanel
 import libtcodpy as libtcod
@@ -43,13 +43,18 @@ class MainWindow(BasePanel):
     def Render(self):
         from core import Core  # importing here to circumvent an annoying circular import dependency
 
-        #Core.mainScene.CalculateLightmap()
-
-        for tile in Core.mainScene.Tiles:
+        while len(Renderer.RenderStack) > 0:
             try:
+                tile = Renderer.RenderStack.pop()
                 tile.Render(self)
             except Exception, e:
                 raise e
+
+        # for tile in Core.mainScene.Tiles:
+        #     try:
+        #         tile.Render(self)
+        #     except Exception, e:
+        #         raise e
 
         # apply lights
         ((Fg_R, Fg_G, Fg_B), (Bg_R, Bg_G, Bg_B)) = self.ApplyLights()  # Get lit versions of the color buffers
