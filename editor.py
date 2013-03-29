@@ -84,6 +84,7 @@ panels = [mapView, dataView, paletteView]
 dataView.Log("NO, YOU CAN'T SAVE ANYTHING YET", libtcod.dark_cyan)
 dataView.Log(".", libtcod.sepia)
 dataView.Log("Mouse wheel changes brush size")
+dataView.Log("Press 'B' to change brush shape")
 dataView.Log("Tile palette is populated from the contents of the tiles.SimpleTiles namespace/file at the moment")
 
 Core.init(Scene(window=mapView, mapW=EngineSettings.ViewWidth, mapH=EngineSettings.ViewHeight, ambientLight=AmbientLight(1.0)))

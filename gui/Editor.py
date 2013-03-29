@@ -74,7 +74,9 @@ class EditorMapWindow(MainWindow):
     def HandleInput(self, key, mouse):
         if not self.rect.Contains(mouse.cx,  mouse.cy):
             return
-        pass
+
+        if libtcod.console_is_key_pressed(libtcod.KEY_SPACE) and (mouse.dcx, mouse.dcy) != (0, 0):
+            print 'dragging', (mouse.dcx, mouse.dcy)
 
 
 class Brush(object):
@@ -112,6 +114,13 @@ class Brush(object):
         if mouse.wheel_down:
             self.Size = max(self.Size - 1, 1)
             print "Brush size", self.Size
+
+        if key.c == ord('b'):
+            if self.Shape.lower() == 'square':
+                self.Shape = 'round'
+            else:
+                self.Shape = 'square'
+            print "Brush shape:", self.Shape
 
     def Paint(self, x, y):
         brush = self.Palette.Selected
