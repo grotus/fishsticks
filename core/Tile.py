@@ -27,5 +27,5 @@ class Tile(WObject):
             obj.Render(window)
 
     def IsDirty(self):
-        Renderer.RenderStack.append(self)
+        Renderer.TileStack.append(self)
 
