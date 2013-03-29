@@ -1,3 +1,4 @@
+from math import sqrt
 from core import EngineSettings, Core
 from gui.BasePanel import BasePanel
 from gui.MainWindow import MainWindow
@@ -77,11 +78,16 @@ class EditorMapWindow(MainWindow):
 
 
 class Brush(object):
-    """docstring for Brush"""
-    def __init__(self, canvas, palette):
+    """A brush for drawing in the editor window.
+    Canvas - the editor window we draw in
+    Palette - the tiles that we can draw with
+    Shape - should be 'round' or 'square'"""
+
+    def __init__(self, canvas, palette, shape="round"):
         super(Brush, self).__init__()
         self.Canvas = canvas
         self.Palette = palette
+        self.Shape = shape.lower()
         self.Size = 1
 
         self.__lastX = -1
@@ -110,9 +116,21 @@ class Brush(object):
     def Paint(self, x, y):
         brush = self.Palette.Selected
         size = self.Size - 1
-        for py in xrange(y-size, y+size+1):
-            for px in xrange(x-size, x+size+1):
-                if Core.mainScene.Contains(px, py) and\
-                        (not Core.mainScene.GetTile(px, py).__class__ == brush.ItemClass):
-                    #print "draw", brush.Name, "at", (mouse.cx,  mouse.cy)
-                    Core.mainScene.SetTile(px, py, brush.ItemClass(px, py))
+        shape = self.Shape.lower()
+        if shape == 'square':
+            for py in xrange(y-size, y+size+1):
+                for px in xrange(x-size, x+size+1):
+                    if Core.mainScene.Contains(px, py) and\
+                            (not Core.mainScene.GetTile(px, py).__class__ == brush.ItemClass):
+                        #print "draw", brush.Name, "at", (mouse.cx,  mouse.cy)
+                        Core.mainScene.SetTile(px, py, brush.ItemClass(px, py))
+
+        else: # the default, basically if shape == 'round'
+            for py in xrange(y-size, y+size+1):
+                for px in xrange(x-size, x+size+1):
+                    r = sqrt((x - px) * (x - px) + (y - py) * (y - py))
+                    if r <= size and \
+                            Core.mainScene.Contains(px, py) and \
+                            (not Core.mainScene.GetTile(px, py).__class__ == brush.ItemClass):
+                        #print "draw", brush.Name, "at", (mouse.cx,  mouse.cy)
+                        Core.mainScene.SetTile(px, py, brush.ItemClass(px, py))
