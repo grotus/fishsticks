@@ -1,10 +1,12 @@
 import libtcodpy as libtcod
 
-RenderStack = []  # tiles to be rendered. Might move elsewhere.
+TileStack = []  # tiles to be rendered. Might move elsewhere.
+LightStack = [] # coordinates that need to be lit
 
 def Clear():
-    global RenderStack
-    RenderStack = []
+    global TileStack, LightStack
+    TileStack = []
+    LightStack = []
 
 def RenderAll(panels):
     for panel in panels:

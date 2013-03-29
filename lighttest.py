@@ -7,6 +7,8 @@ import libtcodpy as libtcod
 from core.Light import Light, AmbientLight
 
 
+EngineSettings.FpsLimit = 2000 # kept high for dev purposes
+
 # Initial libtcod setup...
 libtcod.console_set_custom_font('fonts/arial12x12.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 libtcod.console_init_root(EngineSettings.ScreenWidth, EngineSettings.ScreenHeight, 'Light test', False)

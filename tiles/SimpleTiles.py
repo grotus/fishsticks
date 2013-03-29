@@ -15,9 +15,10 @@ class StonyGroundTile(core.Tile.Tile):
 class SomeVerySpecialStoneTile(StonyGroundTile):
     def __init__(self, x, y):
         super(SomeVerySpecialStoneTile, self).__init__(x=x, y=y)
+        self.Char = '#'
 
 
 class SomeOtherStoneTile(core.Tile.Tile):
     def __init__(self, x, y):
-        super(SomeOtherStoneTile, self).__init__(char=' ', bgcol=libtcod.grey, blockMove=False, blockSight=False, x=x, y=y)
+        super(SomeOtherStoneTile, self).__init__(char='^', bgcol=libtcod.grey, blockMove=False, blockSight=False, x=x, y=y)
 

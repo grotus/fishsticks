@@ -1,6 +1,6 @@
 from helpers.Helpers import Rect
 import libtcodpy as libtcod
-from core import Core
+from core import Core, Renderer
 
 
 class Light(object):
@@ -39,6 +39,7 @@ class Light(object):
                     local_brightness = self.Brightness * float((self.__squared_radius - r) / self.__squared_radius)
                     lightmap_bright, lightmap_col = Core.mainScene.GetLightAt(x, y)
                     Core.mainScene.SetLightAt(x, y, lightmap_bright + local_brightness, lightmap_col + self.Col)
+                    Renderer.LightStack.append((x, y))
 
     #deprecated
     def GetIllumination(self, x, y):
