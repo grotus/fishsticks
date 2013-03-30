@@ -50,7 +50,7 @@ print tileDir
 #
 
 PALETTE_WIDTH = 40
-DATA_HEIGHT = 10
+DATA_HEIGHT = 9
 
 EngineSettings.FpsLimit = 2000
 EngineSettings.ScreenWidth = 80+PALETTE_WIDTH
@@ -75,7 +75,7 @@ print "Renderer:", renderers[libtcod.sys_get_renderer()]
 # Panels
 paletteView = PalettePanel(None, Rect(EngineSettings.ViewWidth, 0, PALETTE_WIDTH, EngineSettings.ScreenHeight), tileDir)
 mapView = EditorMapWindow(paletteView, Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight))
-dataView = LogPanel(None, Rect(0, EngineSettings.ViewHeight, EngineSettings.ViewWidth, DATA_HEIGHT),
+dataView = LogPanel(None, Rect(0, EngineSettings.ViewHeight, EngineSettings.ViewWidth, DATA_HEIGHT-1),
                     padding=Padding(left=1, right=1, top=1, bottom=1),
                     color_data=ColorData(background_color=libtcod.sepia))
 
@@ -101,12 +101,20 @@ while not libtcod.console_is_window_closed():
     brush.HandleInput(key, mouse)
 
     # start render
+    libtcod.console_clear(0)  # only the printouts below actually require this. They could be shuffled into a small status bar/console of their own.
     Renderer.RenderAll(panels)
 
-    #show FPS and color under mouse cursor
+    #show FPS and coordinate of mouse cursor
     (x, y) = (mouse.cx, mouse.cy)
     libtcod.console_print_ex(None, EngineSettings.ScreenWidth-1, EngineSettings.ScreenHeight-1,
                              libtcod.BKGND_SET, libtcod.RIGHT, '%3d FPS' % libtcod.sys_get_fps())
+    libtcod.console_print_ex(None, 1, EngineSettings.ScreenHeight-1,
+                             libtcod.BKGND_SET, libtcod.LEFT, 'Brush: {}, size {}'.format(brush.Shape, brush.Size))
+    if mapView.Contains(x, y) and (mouse.cx, mouse.cy) != (0, 0):
+        tileUnderCursor = Core.mainScene.GetTile(x, y)
+        nameUnderCursor = '-' if tileUnderCursor is None else tileUnderCursor.__class__.__name__
+        libtcod.console_print_ex(None, EngineSettings.ViewWidth-2, EngineSettings.ScreenHeight-1,
+                                 libtcod.BKGND_SET, libtcod.RIGHT, '{} {}'.format(nameUnderCursor, (x, y)))
 
     libtcod.console_flush()  # draw the console
 

@@ -110,17 +110,14 @@ class Brush(object):
 
         if mouse.wheel_up:
             self.Size = min(self.Size + 1, 10)
-            print "Brush size", self.Size
         if mouse.wheel_down:
             self.Size = max(self.Size - 1, 1)
-            print "Brush size", self.Size
 
         if key.c == ord('b'):
             if self.Shape.lower() == 'square':
                 self.Shape = 'round'
             else:
                 self.Shape = 'square'
-            print "Brush shape:", self.Shape
 
     def Paint(self, x, y):
         brush = self.Palette.Selected
