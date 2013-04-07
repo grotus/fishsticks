@@ -30,6 +30,7 @@ class WObject(object):
     def BgFlag(self):
         return self.ColorData.background_flag
 
+    @property
     def Coord(self):
         return (self.x, self.y)
 

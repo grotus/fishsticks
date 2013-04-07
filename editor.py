@@ -58,10 +58,12 @@ EngineSettings.ScreenHeight = 50+DATA_HEIGHT
 EngineSettings.ViewWidth = 80
 EngineSettings.ViewHeight = 50
 
+
 # Initial libtcod setup
 libtcod.console_set_custom_font('fonts/arial12x12.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 libtcod.console_init_root(EngineSettings.ScreenWidth, EngineSettings.ScreenHeight, 'Light test', False)
 libtcod.sys_set_fps(EngineSettings.FpsLimit)
+
 
 # Set renderer
 renderers = {libtcod.RENDERER_GLSL: 'RENDERER_GLSL', libtcod.RENDERER_OPENGL: 'RENDERER_OPENGL',
@@ -70,16 +72,11 @@ libtcod.sys_set_renderer(libtcod.RENDERER_OPENGL)
 print "Renderer:", renderers[libtcod.sys_get_renderer()]
 
 
-
-
 # Panels
 paletteView = PalettePanel(None, Rect(EngineSettings.ViewWidth, 0, PALETTE_WIDTH, EngineSettings.ScreenHeight), tileDir)
-mapView = EditorMapWindow(paletteView, Rect(0, 0, EngineSettings.ViewWidth, EngineSettings.ViewHeight))
 dataView = LogPanel(None, Rect(0, EngineSettings.ViewHeight, EngineSettings.ViewWidth, DATA_HEIGHT-1),
                     padding=Padding(left=1, right=1, top=1, bottom=1),
                     color_data=ColorData(background_color=libtcod.sepia))
-
-panels = [mapView, dataView, paletteView]
 
 dataView.Log("NO, YOU CAN'T SAVE ANYTHING YET", libtcod.dark_cyan)
 dataView.Log(".", libtcod.sepia)
@@ -87,9 +84,11 @@ dataView.Log("Mouse wheel changes brush size")
 dataView.Log("Press 'B' to change brush shape")
 dataView.Log("Tile palette is populated from the contents of the tiles.SimpleTiles namespace/file at the moment")
 
-Core.init(Scene(window=mapView, mapW=EngineSettings.ViewWidth, mapH=EngineSettings.ViewHeight, ambientLight=AmbientLight(1.0)))
+Core.init(Scene(mapW=EngineSettings.ViewWidth*2, mapH=EngineSettings.ViewHeight, ambientLight=AmbientLight(1.0), editor=True))
+panels = [Core.mainWin, dataView, paletteView]
 
-brush = Brush(mapView, paletteView)
+brush = Brush(Core.mainWin, paletteView)
+
 
 # Editor main loop
 mouse = libtcod.Mouse()
@@ -110,11 +109,14 @@ while not libtcod.console_is_window_closed():
                              libtcod.BKGND_SET, libtcod.RIGHT, '%3d FPS' % libtcod.sys_get_fps())
     libtcod.console_print_ex(None, 1, EngineSettings.ScreenHeight-1,
                              libtcod.BKGND_SET, libtcod.LEFT, 'Brush: {}, size {}'.format(brush.Shape, brush.Size))
-    if mapView.Contains(x, y) and (mouse.cx, mouse.cy) != (0, 0):
+    if Core.mainWin.Contains(x, y) and (mouse.cx, mouse.cy) != (0, 0):
+        x, y = Core.mainScene.ScreenToWorldPoint(x, y)
         tileUnderCursor = Core.mainScene.GetTile(x, y)
+        tileCoord = "(-, -)" if tileUnderCursor is None else tileUnderCursor.Coord
         nameUnderCursor = '-' if tileUnderCursor is None else tileUnderCursor.__class__.__name__
         libtcod.console_print_ex(None, EngineSettings.ViewWidth-2, EngineSettings.ScreenHeight-1,
-                                 libtcod.BKGND_SET, libtcod.RIGHT, '{} {}'.format(nameUnderCursor, (x, y)))
+                                 libtcod.BKGND_SET, libtcod.RIGHT, '{} {} {}'.format(nameUnderCursor, tileCoord, (mouse.cx, mouse.cy)))
+        
 
     libtcod.console_flush()  # draw the console
 

@@ -17,7 +17,6 @@ class Tile(WObject):
 
     def Render(self, window):
         # TODO: should do a check for visibility and explored
-
         window.PaintFG(self.x, self.y, self.ColorData.foreground_color)
         window.PaintBG(self.x, self.y, self.ColorData.background_color)
         window.SetChar(self.x, self.y, self.Char)

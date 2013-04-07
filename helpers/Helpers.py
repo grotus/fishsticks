@@ -34,6 +34,16 @@ class Rect(object):
         self.w = w
         self.h = h
 
+    def SetFromRect(self, otherRect):
+        self.x = otherRect.x
+        self.y = otherRect.y
+        self.xMin = otherRect.xMin
+        self.yMin = otherRect.yMin
+        self.xMax = otherRect.xMax
+        self.yMax = otherRect.yMax
+        self.w = otherRect.w
+        self.h = otherRect.h
+
     def Center(self):
         center_x = (self.xMin + self.xMax) / 2
         center_y = (self.yMin + self.yMax) / 2

@@ -1,8 +1,6 @@
 from math import sqrt
-from core import EngineSettings, Core
 from gui.BasePanel import BasePanel
 from gui.MainWindow import MainWindow
-from helpers.Helpers import Rect
 
 import libtcodpy as libtcod
 
@@ -68,15 +66,17 @@ class PaletteItem(object):
 
 
 class EditorMapWindow(MainWindow):
-    def __init__(self, palette, rect):
-        super(EditorMapWindow, self).__init__(rect=rect)
+    def __init__(self, scene):
+        super(EditorMapWindow, self).__init__(scene)
 
     def HandleInput(self, key, mouse):
         if not self.rect.Contains(mouse.cx,  mouse.cy):
             return
 
-        if libtcod.console_is_key_pressed(libtcod.KEY_SPACE) and (mouse.dcx, mouse.dcy) != (0, 0):
+        if libtcod.console_is_key_pressed(libtcod.KEY_SPACE) and (mouse.dx, mouse.dy) != (0, 0):
             print 'dragging', (mouse.dcx, mouse.dcy)
+            focus = self.Scene.MainWindow.Focus
+            self.Scene.MainWindow.Focus = focus[0]-mouse.dcx, focus[1]-mouse.dcy
 
 
 class Brush(object):
@@ -95,7 +95,6 @@ class Brush(object):
         self.__lastX = -1
         self.__lastY = -1
 
-
     def HandleInput(self, key, mouse):
         if not self.Canvas.rect.Contains(mouse.cx,  mouse.cy):
             return
@@ -105,8 +104,7 @@ class Brush(object):
 
         if mouse.lbutton and (mouse.cx, mouse.cy) != (self.__lastX, self.__lastY):
             self.__lastX, self.__lastY = mouse.cx, mouse.cy
-            mapX, mapY = mouse.cx, mouse.cy # will need to translate this later, to account for map scrolling
-            self.Paint(mapX, mapY)
+            self.Paint(mouse.cx, mouse.cy)
 
         if mouse.wheel_up:
             self.Size = min(self.Size + 1, 10)
@@ -120,6 +118,11 @@ class Brush(object):
                 self.Shape = 'square'
 
     def Paint(self, x, y):
+        from core import Core
+
+        x, y = Core.mainScene.ScreenToWorldPoint(x, y)
+
+
         brush = self.Palette.Selected
         size = self.Size - 1
         shape = self.Shape.lower()
@@ -128,10 +131,9 @@ class Brush(object):
                 for px in xrange(x-size, x+size+1):
                     if Core.mainScene.Contains(px, py) and\
                             (not Core.mainScene.GetTile(px, py).__class__ == brush.ItemClass):
-                        #print "draw", brush.Name, "at", (mouse.cx,  mouse.cy)
                         Core.mainScene.SetTile(px, py, brush.ItemClass(px, py))
 
-        else: # the default, basically if shape == 'round'
+        else:  # the default, basically if shape == 'round'
             for py in xrange(y-size, y+size+1):
                 for px in xrange(x-size, x+size+1):
                     r = sqrt((x - px) * (x - px) + (y - py) * (y - py))
