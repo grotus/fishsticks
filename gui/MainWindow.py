@@ -47,7 +47,6 @@ class MainWindow(BasePanel):
         self.__MapConsole = libtcod.console_new(self.Scene.Rect.w, self.Scene.Rect.h)
 
     def Render(self):
-
         while len(Renderer.TileStack) > 0:
             try:
                 tile = Renderer.TileStack.pop()

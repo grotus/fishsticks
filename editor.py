@@ -6,42 +6,49 @@ import tiles.SimpleTiles
 import tiles.Nullspace
 import libtcodpy as libtcod
 from core import EngineSettings, Renderer, Core
-from gui.BasePanel import BasePanel
 from gui.LogPanel import LogPanel
 from helpers.Helpers import *
+from helpers import SubclassFinder
 from gui.Editor import PalettePanel, EditorMapWindow, Brush
+import datetime
+import json
 
 
+def getTimestampString():
+    return datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d%H%M%S")
+
+MAP_SUFFIX = ".json"
+filename = ""
+mapdata = None
 if __name__ == '__main__':
-    sys.argv.pop()
-    for arg in sys.argv:
-        print arg
+    sys.argv.pop(0)
+    if len(sys.argv) > 0:
+        first = sys.argv.pop(0)
+        if not first.endswith(MAP_SUFFIX):
+            first += MAP_SUFFIX
+        filename = first
+
+        try:
+            with open(filename) as mapsource:
+                mapdata = json.load(mapsource)
+                print filename, " EXISTS! "
+        except IOError, e:
+            print filename, " DOES NOT EXIST!"
+        except Exception, e:
+            raise
+
+    else:
+        filename = "default"+getTimestampString()+MAP_SUFFIX
 
 
 #-----------------------------------------------------------------------------#
 #
 # Build dictionary of all subclasses of Tile
 #
-
-def FindSubclassesRec(clss):
-    """Recursive function to find all subclasses of a class and return them as a list"""
-    subclasses = clss.__subclasses__()
-    if len(subclasses) == 0:
-        return []
-    else:
-        results = subclasses
-        for subclass in subclasses:
-            results.extend(FindSubclassesRec(subclass))
-        return results
-
-
-tileClasses = FindSubclassesRec(Tile)
-print tileClasses
-tileDir = dict()
-for tile in tileClasses:
-    tileDir[tile.__name__] = tile
-
+from tiles import registry
+tileDir = registry.tile_dir
 print tileDir
+print registry.tile_module_dir
 
 
 #-----------------------------------------------------------------------------#
@@ -85,6 +92,15 @@ dataView.Log("Press 'B' to change brush shape")
 dataView.Log("Tile palette is populated from the contents of the tiles.SimpleTiles namespace/file at the moment")
 
 Core.init(Scene(mapW=EngineSettings.ViewWidth*2, mapH=EngineSettings.ViewHeight, ambientLight=AmbientLight(1.0), editor=True))
+if mapdata is not None:
+    w, h = mapdata['dimensions']
+    tiledata = mapdata['tiledata']
+    maptiles = []
+    for data in tiledata:
+        tileCo, clsName = data
+        maptiles.append(tileDir[clsName](tileCo[0], tileCo[1]))
+    Core.mainScene.SetTiles(maptiles, w, h)
+
 panels = [Core.mainWin, dataView, paletteView]
 
 brush = Brush(Core.mainWin, paletteView)
@@ -103,6 +119,7 @@ while not libtcod.console_is_window_closed():
     libtcod.console_clear(0)  # only the printouts below actually require this. They could be shuffled into a small status bar/console of their own.
     Renderer.RenderAll(panels)
 
+
     #show FPS and coordinate of mouse cursor
     (x, y) = (mouse.cx, mouse.cy)
     libtcod.console_print_ex(None, EngineSettings.ScreenWidth-1, EngineSettings.ScreenHeight-1,
@@ -116,9 +133,20 @@ while not libtcod.console_is_window_closed():
         nameUnderCursor = '-' if tileUnderCursor is None else tileUnderCursor.__class__.__name__
         libtcod.console_print_ex(None, EngineSettings.ViewWidth-2, EngineSettings.ScreenHeight-1,
                                  libtcod.BKGND_SET, libtcod.RIGHT, '{} {} {}'.format(nameUnderCursor, tileCoord, (mouse.cx, mouse.cy)))
-        
 
     libtcod.console_flush()  # draw the console
 
     if key.vk == libtcod.KEY_ESCAPE:
+        scene = Core.mainScene
+        mapdata = {'dimensions': (scene.Rect.w, scene.Rect.h)}
+        maptiles = scene.Tiles
+        tiledata = []
+        for i in xrange(len(maptiles)):
+            tile = maptiles[i]
+            tiledata.append((tile.Coord, tile.__class__.__name__))
+        mapdata['tiledata'] = tiledata
+        with open('testeditormap.json', 'wb') as outfile:
+            json_data = json.dumps(mapdata, sort_keys=True)  # add argument indent=2 to make outputfile human-readable
+            outfile.write(json_data)
+            print json.loads(json_data)['dimensions']
         break

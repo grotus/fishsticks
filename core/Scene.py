@@ -40,6 +40,9 @@ class Scene(object):
         # Might change this to create the light, rather than just be a wrapper for appending to a list
         if len(tiles) != w*h:
             raise Exception('Specified dimensions does not match size of tile list')
+
+        Renderer.Clear()  # Should perhaps only purge the tilestack? This step is probably redundant.
+        Renderer.TileStack = list(tiles)  # render aLL these tiles. It's vital that we copy the list rather than assign it directly. 
         self.Tiles = tiles
         self.Rect = Rect(0, 0, w, h)
         self.LightMap = [0]*w*h
