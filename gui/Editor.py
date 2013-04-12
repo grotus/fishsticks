@@ -74,7 +74,6 @@ class EditorMapWindow(MainWindow):
             return
 
         if libtcod.console_is_key_pressed(libtcod.KEY_SPACE) and (mouse.dx, mouse.dy) != (0, 0):
-            print 'dragging', (mouse.dcx, mouse.dcy)
             focus = self.Scene.MainWindow.Focus
             self.Scene.MainWindow.Focus = focus[0]-mouse.dcx, focus[1]-mouse.dcy
 

@@ -57,3 +57,6 @@ class Rect(object):
     def Contains(self, x, y):
         return (self.xMin <= x and self.xMax > x and
                 self.yMin <= y and self.yMax > y)
+
+    def __repr__(self):
+        return "Rect(x:{0}, y:{1}, w:{2}, h:{3})".format(self.x, self.y, self.w, self.h)

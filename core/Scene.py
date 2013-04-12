@@ -9,9 +9,11 @@ from tiles.Nullspace import Nullspace
 from core import Renderer
 from gui.Editor import EditorMapWindow
 
-
+# TODO: Consider if this should inherit MainWindow. OTOH, composition is nice. 
 class Scene(object):
     def __init__(self, mapW=0, mapH=0, lights=[], ambientLight=None, editor=False):
+
+        self.Editor = editor
 
         Renderer.Clear()
         tiles = []
@@ -28,13 +30,53 @@ class Scene(object):
         self.PointLights = lights
         self.AmbientLight = ambientLight
         self.MainWindow = None
-        if not editor:
-            self.MainWindow = MainWindow(self)
-        else:
-            self.MainWindow = EditorMapWindow(self)
+        self.InitMainWindow()
+
+    # Start: methods and properties to allow ourselves to be used in place of direct MainWindow access. If we switch to inheritance rather than composition, this is unnecessary
+    def Render(self):
+        self.MainWindow.Render()
+
+    def HandleInput(self, key, mouse):
+        self.MainWindow.HandleInput(key, mouse)
+
+    @property
+    def parent(self):
+        return self.MainWindow.parent
+
+    @property
+    def children(self):
+        return self.MainWindow.children
+
+    @property
+    def console(self):
+        return self.MainWindow.console
+
+    @property
+    def w(self):
+        return self.MainWindow.w
+
+    @property
+    def h(self):
+        return self.MainWindow.h
+
+    @property
+    def x(self):
+        return self.MainWindow.x
+
+    @property
+    def y(self):
+        return self.MainWindow.y
+
+    # End: MainWindow methods & properties access
 
     def Contains(self, x, y):
         return self.Rect.Contains(x, y)
+
+    def InitMainWindow(self):
+        if not self.Editor:
+            self.MainWindow = MainWindow(self)
+        else:
+            self.MainWindow = EditorMapWindow(self)
 
     def SetTiles(self, tiles, w, h):
         # Might change this to create the light, rather than just be a wrapper for appending to a list
@@ -47,6 +89,7 @@ class Scene(object):
         self.Rect = Rect(0, 0, w, h)
         self.LightMap = [0]*w*h
         self.LightColMap = [libtcod.white]*w*h
+        self.InitMainWindow()
 
     def GetTile(self, x, y):
         if not self.Rect.Contains(x, y):

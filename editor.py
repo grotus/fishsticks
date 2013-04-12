@@ -20,6 +20,9 @@ def getTimestampString():
 MAP_SUFFIX = ".json"
 filename = ""
 mapdata = None
+mapIsNew = True
+newMapW = 100
+newMapH = 100
 if __name__ == '__main__':
     sys.argv.pop(0)
     if len(sys.argv) > 0:
@@ -31,14 +34,22 @@ if __name__ == '__main__':
         try:
             with open(filename) as mapsource:
                 mapdata = json.load(mapsource)
-                print filename, " EXISTS! "
-        except IOError, e:
-            print filename, " DOES NOT EXIST!"
-        except Exception, e:
+                mapIsNew = False
+                print "Loading map {0}, size {1}".format(filename, mapdata['dimensions'])
+
+        except IOError, e:  # Couldn't find file, so this must be a new map
+            if len(sys.argv) > 0:
+                newMapW = int(sys.argv.pop(0))
+            if len(sys.argv) > 0:
+                newMapH = int(sys.argv.pop(0))
+            print "Creating new map {0}, size {1}".format(filename, (newMapW, newMapH))
+
+        except Exception, e:  # Scheisse!
             raise
 
     else:
         filename = "default"+getTimestampString()+MAP_SUFFIX
+        print "Creating new map {0}, size {1}".format(filename, (newMapW, newMapH))
 
 
 #-----------------------------------------------------------------------------#
@@ -85,13 +96,13 @@ dataView = LogPanel(None, Rect(0, EngineSettings.ViewHeight, EngineSettings.View
                     padding=Padding(left=1, right=1, top=1, bottom=1),
                     color_data=ColorData(background_color=libtcod.sepia))
 
-dataView.Log("NO, YOU CAN'T SAVE ANYTHING YET", libtcod.dark_cyan)
+dataView.Log("Press ESC to exit and saved. Clicking the X closes the window without saving.", libtcod.dark_cyan)
 dataView.Log(".", libtcod.sepia)
 dataView.Log("Mouse wheel changes brush size")
 dataView.Log("Press 'B' to change brush shape")
 dataView.Log("Tile palette is populated from the contents of the tiles.SimpleTiles namespace/file at the moment")
 
-Core.init(Scene(mapW=EngineSettings.ViewWidth*2, mapH=EngineSettings.ViewHeight, ambientLight=AmbientLight(1.0), editor=True))
+Core.init(Scene(mapW=newMapW, mapH=newMapH, ambientLight=AmbientLight(1.0), editor=True))
 if mapdata is not None:
     w, h = mapdata['dimensions']
     tiledata = mapdata['tiledata']
@@ -101,9 +112,9 @@ if mapdata is not None:
         maptiles.append(tileDir[clsName](tileCo[0], tileCo[1]))
     Core.mainScene.SetTiles(maptiles, w, h)
 
-panels = [Core.mainWin, dataView, paletteView]
+panels = [Core.mainScene, dataView, paletteView]
 
-brush = Brush(Core.mainWin, paletteView)
+brush = Brush(Core.mainScene.MainWindow, paletteView)
 
 
 # Editor main loop
@@ -119,14 +130,13 @@ while not libtcod.console_is_window_closed():
     libtcod.console_clear(0)  # only the printouts below actually require this. They could be shuffled into a small status bar/console of their own.
     Renderer.RenderAll(panels)
 
-
     #show FPS and coordinate of mouse cursor
     (x, y) = (mouse.cx, mouse.cy)
     libtcod.console_print_ex(None, EngineSettings.ScreenWidth-1, EngineSettings.ScreenHeight-1,
                              libtcod.BKGND_SET, libtcod.RIGHT, '%3d FPS' % libtcod.sys_get_fps())
     libtcod.console_print_ex(None, 1, EngineSettings.ScreenHeight-1,
                              libtcod.BKGND_SET, libtcod.LEFT, 'Brush: {}, size {}'.format(brush.Shape, brush.Size))
-    if Core.mainWin.Contains(x, y) and (mouse.cx, mouse.cy) != (0, 0):
+    if Core.mainScene.MainWindow.Contains(x, y) and (mouse.cx, mouse.cy) != (0, 0):
         x, y = Core.mainScene.ScreenToWorldPoint(x, y)
         tileUnderCursor = Core.mainScene.GetTile(x, y)
         tileCoord = "(-, -)" if tileUnderCursor is None else tileUnderCursor.Coord
@@ -145,7 +155,7 @@ while not libtcod.console_is_window_closed():
             tile = maptiles[i]
             tiledata.append((tile.Coord, tile.__class__.__name__))
         mapdata['tiledata'] = tiledata
-        with open('testeditormap.json', 'wb') as outfile:
+        with open(filename, 'wb') as outfile:
             json_data = json.dumps(mapdata, sort_keys=True)  # add argument indent=2 to make outputfile human-readable
             outfile.write(json_data)
             print json.loads(json_data)['dimensions']

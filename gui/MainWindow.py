@@ -52,6 +52,7 @@ class MainWindow(BasePanel):
                 tile = Renderer.TileStack.pop()
                 tile.Render(self)
                 Renderer.LightStack.append((tile.x, tile.y))
+
             except Exception, e:
                 raise e
 
